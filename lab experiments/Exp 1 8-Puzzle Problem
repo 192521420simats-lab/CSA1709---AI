@@ -1,0 +1,53 @@
+# 8-Puzzle Problem 
+from collections import deque
+
+def solve(start, goal):
+    queue = deque([(start, [])])
+    visited = {tuple(sum(start, []))}
+
+    while queue:
+        state, path = queue.popleft()
+
+        if state == goal:
+            for step in path + [state]:
+                for row in step:
+                    print(row)
+                print()
+            print("Puzzle solved successfully!")
+            return
+
+        x, y = next(
+            (i, j)
+            for i in range(3)
+            for j in range(3)
+            if state[i][j] == 0
+        )
+
+        for dx, dy in [(0, 1), (0, -1), (1, 0), (-1, 0)]:
+            nx, ny = x + dx, y + dy
+
+            if 0 <= nx < 3 and 0 <= ny < 3:
+                new_state = [row[:] for row in state]
+                new_state[x][y], new_state[nx][ny] = (
+                    new_state[nx][ny], new_state[x][y]
+                )
+
+                key = tuple(sum(new_state, []))
+
+                if key not in visited:
+                    visited.add(key)
+                    queue.append((new_state, path + [state]))
+
+    print("Solution not found!")
+
+start = [[1, 2, 3],
+         [4, 0, 6],
+         [7, 5, 8]]
+
+goal = [[1, 2, 3],
+        [4, 5, 6],
+        [7, 8, 0]]
+
+solve(start, goal)
+
+
